@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using WebConsumeApi_Villa.Models;
+using WebConsumeApi_Villa.Models.DTO;
 
 namespace WebConsumeApi_Villa.Controllers
 {
@@ -9,13 +10,13 @@ namespace WebConsumeApi_Villa.Controllers
     public class VillaApiController : ControllerBase
     {
         [HttpGet]
-        public IEnumerable<Villa> GetVillas()
+        public IEnumerable<VillaDTO> GetVillas()
         {
-            return new List<Villa>
+            return new List<VillaDTO>
             {
-                new Villa {Id=1,Name="salamu"},
-                new Villa {Id=2,Name="saif"},
-                new Villa {Id=3,Name="shahrukh"},
+                new VillaDTO {Id=1,Name="salamu"},
+                new VillaDTO {Id=2,Name="saif"},
+                new VillaDTO {Id=3,Name="shahrukh"},
                
             };
         }
