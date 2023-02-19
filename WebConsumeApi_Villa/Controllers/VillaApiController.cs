@@ -16,9 +16,13 @@ namespace WebConsumeApi_Villa.Controllers
            return Ok(VillaStore.VillaList);
         }
         [HttpGet("{id:int}")]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(404)]
-        [ProducesResponseType(400)]
+        // [ProducesResponseType(200,Type=typeof(VillaDTO))]
+        //[ProducesResponseType(200)]
+        //[ProducesResponseType(404)]
+        //[ProducesResponseType(400)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public ActionResult<VillaDTO> GetVilla(int id)
         {
             if(id == 0) {
