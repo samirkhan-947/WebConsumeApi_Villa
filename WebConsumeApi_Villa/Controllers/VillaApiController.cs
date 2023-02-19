@@ -41,6 +41,10 @@ namespace WebConsumeApi_Villa.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public ActionResult<VillaDTO> CreateVilla([FromBody] VillaDTO villa)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
             if(villa == null)
             {
                 return BadRequest();
