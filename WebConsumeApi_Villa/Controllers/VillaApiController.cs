@@ -41,9 +41,15 @@ namespace WebConsumeApi_Villa.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public ActionResult<VillaDTO> CreateVilla([FromBody] VillaDTO villa)
         {
+
             if (!ModelState.IsValid)
             {
-                return BadRequest();
+                return BadRequest(ModelState);
+            }
+            if (VillaStore.VillaList.FirstOrDefault(x => x.Name.ToLower() == villa.Name.ToLower())!=null)
+            {
+                ModelState.AddModelError("CustomError", $"{villa.Name} already Exists");
+                return  BadRequest(ModelState);
             }
             if(villa == null)
             {
