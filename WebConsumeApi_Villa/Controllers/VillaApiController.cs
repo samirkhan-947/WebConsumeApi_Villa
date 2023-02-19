@@ -35,5 +35,23 @@ namespace WebConsumeApi_Villa.Controllers
             }
              return Ok(villa);
         }
+        [HttpPost]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public ActionResult<VillaDTO> CreateVilla([FromBody] VillaDTO villa)
+        {
+            if(villa == null)
+            {
+                return BadRequest();
+            }
+            if(villa.Id > 0)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+            villa.Id = VillaStore.VillaList.OrderByDescending(x=>x.Id).FirstOrDefault().Id +1;
+            VillaStore.VillaList.Add(villa);
+            return Ok(villa);
+        }
     }
 }
