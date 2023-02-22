@@ -1,5 +1,8 @@
-var builder = WebApplication.CreateBuilder(args);
+using Serilog;
 
+var builder = WebApplication.CreateBuilder(args);
+Log.Logger = new LoggerConfiguration().MinimumLevel.Debug().WriteTo.File("log/villas.txt",rollingInterval:RollingInterval.Day).CreateLogger();
+builder.Host.UseSerilog();
 // Add services to the container.
 
 builder.Services.AddControllers().AddNewtonsoftJson();
