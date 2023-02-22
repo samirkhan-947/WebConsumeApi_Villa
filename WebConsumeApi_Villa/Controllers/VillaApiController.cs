@@ -11,7 +11,13 @@ namespace WebConsumeApi_Villa.Controllers
     [ApiController]
     public class VillaApiController : ControllerBase
     {
+        private readonly ILogger<VillaApiController> _logger;
+        public VillaApiController(ILogger<VillaApiController> logger)
+        {
+            _logger = logger;
+        }
         [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<IEnumerable<VillaDTO>> GetVillas()
         {
            return Ok(VillaStore.VillaList);
@@ -27,6 +33,7 @@ namespace WebConsumeApi_Villa.Controllers
         public ActionResult<VillaDTO> GetVilla(int id)
         {
             if(id == 0) {
+                _logger.LogError("This is bad reguest");
                 return BadRequest();
             }
             var villa = VillaStore.VillaList.FirstOrDefault(x => x.Id == id);
