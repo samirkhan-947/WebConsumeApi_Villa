@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using WebConsumeApi_Villa.Data;
 using WebConsumeApi_Villa.Logging;
 using WebConsumeApi_Villa.Models;
@@ -151,12 +152,12 @@ namespace WebConsumeApi_Villa.Controllers
             {
                 return BadRequest();
             }
-            var villa = _dbContext.villas.FirstOrDefault(x => x.Id == id);
+            var villa = _dbContext.villas.AsNoTracking().FirstOrDefault(x => x.Id == id);
             VillaDTO modelDTO = new()
             {
                 Id = villa.Id,
                 Name = villa.Name,
-                Sqrt = villa.Sqft,
+                Sqrt = villa.Sqft, 
                 Amenity = villa.Amenity,              
                 Details = villa.Details,
                 ImageUrl = villa.ImageUrl,
