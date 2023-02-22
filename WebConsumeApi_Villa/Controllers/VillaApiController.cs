@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using WebConsumeApi_Villa.Data;
+using WebConsumeApi_Villa.Logging;
 using WebConsumeApi_Villa.Models;
 using WebConsumeApi_Villa.Models.DTO;
 
@@ -12,9 +13,11 @@ namespace WebConsumeApi_Villa.Controllers
     public class VillaApiController : ControllerBase
     {
         private readonly ILogger<VillaApiController> _logger;
-        public VillaApiController(ILogger<VillaApiController> logger)
+        private readonly ILogging _loggerCustome;
+        public VillaApiController(ILogger<VillaApiController> logger, ILogging loggerCustome)
         {
             _logger = logger;
+            _loggerCustome = loggerCustome;
         }
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -34,6 +37,7 @@ namespace WebConsumeApi_Villa.Controllers
         {
             if(id == 0) {
                 _logger.LogError("This is bad reguest");
+                _loggerCustome.LogWithColor("This is bad reguest for custom", "error");
                 return BadRequest();
             }
             var villa = VillaStore.VillaList.FirstOrDefault(x => x.Id == id);
