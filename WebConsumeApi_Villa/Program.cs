@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Serilog;
+using WebConsumeApi_Villa;
 using WebConsumeApi_Villa.Data;
 using WebConsumeApi_Villa.Logging;
 
@@ -14,7 +15,7 @@ Log.Logger = new LoggerConfiguration().MinimumLevel.Debug().WriteTo.File("log/vi
 builder.Host.UseSerilog();
 // Add services to the container.
 
-
+builder.Services.AddAutoMapper(typeof(AutoMapperConfig));
 
 builder.Services.AddTransient<ILogging, Logger>();
 
