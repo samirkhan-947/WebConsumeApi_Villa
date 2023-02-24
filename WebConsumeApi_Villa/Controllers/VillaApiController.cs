@@ -24,9 +24,9 @@ namespace WebConsumeApi_Villa.Controllers
         }
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public ActionResult<IEnumerable<VillaDTO>> GetVillas()
+        public async Task<ActionResult<IEnumerable<VillaDTO>>> GetVillas()
         {
-           return Ok(_dbContext.villas.ToList());
+           return Ok(await _dbContext.villas.ToListAsync());
         }
         [HttpGet("{id:int}",Name =("GetVilla"))]
         // [ProducesResponseType(200,Type=typeof(VillaDTO))]
@@ -36,14 +36,14 @@ namespace WebConsumeApi_Villa.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public ActionResult<VillaDTO> GetVilla(int id)
+        public async Task<ActionResult<VillaDTO>> GetVilla(int id)
         {
             if(id == 0) {
                 _logger.LogError("This is bad reguest");
                 _loggerCustome.LogWithColor("This is bad reguest for custom", "error");
                 return BadRequest();
             }
-            var villa = _dbContext.villas.FirstOrDefault(x => x.Id == id);
+            var villa = await _dbContext.villas.FirstOrDefaultAsync(x => x.Id == id);
             if(villa == null)
             {
                 return NotFound();
@@ -54,14 +54,14 @@ namespace WebConsumeApi_Villa.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public ActionResult<VillaDTO> CreateVilla([FromBody] VillaCreateDTO villa)
+        public async Task<ActionResult<VillaDTO>> CreateVilla([FromBody] VillaCreateDTO villa)
         {
 
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            if (_dbContext.villas.FirstOrDefault(x => x.Name.ToLower() == villa.Name.ToLower())!=null)
+            if (await _dbContext.villas.FirstOrDefaultAsync(x => x.Name.ToLower() == villa.Name.ToLower())!=null)
             {
                 ModelState.AddModelError("CustomError", $"{villa.Name} already Exists");
                 return  BadRequest(ModelState);
@@ -97,13 +97,13 @@ namespace WebConsumeApi_Villa.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
 
-        public IActionResult DeleteVilla(int id)
+        public async Task<IActionResult> DeleteVilla(int id)
         {
             if (id == 0)
             {
                 return BadRequest();
             }
-            var villa = _dbContext.villas.FirstOrDefault(u=>u.Id == id);
+            var villa = await _dbContext.villas.FirstOrDefaultAsync(u=>u.Id == id);
             if (villa == null)
             {
                 return NotFound();
@@ -115,7 +115,7 @@ namespace WebConsumeApi_Villa.Controllers
         [HttpPut("{id:int}", Name = ("UpdateVilla"))]
         [ProducesResponseType(StatusCodes.Status204NoContent)]      
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public IActionResult UpdateVilla(int id, [FromBody] VillaUpdateDTO villaDTO)
+        public async Task<IActionResult> UpdateVilla(int id, [FromBody] VillaUpdateDTO villaDTO)
         {
             if(villaDTO== null || id!= villaDTO.Id)
             {
@@ -139,20 +139,20 @@ namespace WebConsumeApi_Villa.Controllers
 
             };
             _dbContext.villas.Update(model);
-            _dbContext.SaveChanges();
+            await  _dbContext.SaveChangesAsync();
             return NoContent();
         }
 
         [HttpPatch("{id:int}", Name = ("UpdatePartialVilla"))]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public IActionResult UpdatePartialVilla(int id, JsonPatchDocument<VillaUpdateDTO> villaDTO)
+        public async Task<IActionResult> UpdatePartialVilla(int id, JsonPatchDocument<VillaUpdateDTO> villaDTO)
         {
             if (villaDTO == null || id ==0)
             {
                 return BadRequest();
             }
-            var villa = _dbContext.villas.AsNoTracking().FirstOrDefault(x => x.Id == id);
+            var villa = await _dbContext.villas.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
             VillaUpdateDTO modelDTO = new()
             {
                 Id = villa.Id,
@@ -183,7 +183,7 @@ namespace WebConsumeApi_Villa.Controllers
 
             };
             _dbContext.Update(model);
-            _dbContext.SaveChanges();   
+           await _dbContext.SaveChangesAsync();   
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
