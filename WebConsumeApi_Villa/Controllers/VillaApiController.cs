@@ -54,7 +54,7 @@ namespace WebConsumeApi_Villa.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public ActionResult<VillaDTO> CreateVilla([FromBody] VillaDTO villa)
+        public ActionResult<VillaDTO> CreateVilla([FromBody] VillaCreateDTO villa)
         {
 
             if (!ModelState.IsValid)
@@ -70,13 +70,13 @@ namespace WebConsumeApi_Villa.Controllers
             {
                 return BadRequest();
             }
-            if(villa.Id > 0)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError);
-            }
+            //if(villa.Id > 0)
+            //{
+            //    return StatusCode(StatusCodes.Status500InternalServerError);
+            //}
             Villa model = new()
             {
-                Id = villa.Id,
+                
                 Name = villa.Name,
                 Sqft = villa.Sqrt,
                 Amenity= villa.Amenity,
@@ -89,7 +89,7 @@ namespace WebConsumeApi_Villa.Controllers
             };
             _dbContext.villas.Add(model);
             _dbContext.SaveChanges();
-            return CreatedAtRoute("GetVilla", new { id=villa.Id}, villa);
+            return CreatedAtRoute("GetVilla", new { id= model.Id}, villa);
            // return Ok(villa);
         }
         [HttpDelete("{id:int}",Name =("DeleteVilla"))]
@@ -115,7 +115,7 @@ namespace WebConsumeApi_Villa.Controllers
         [HttpPut("{id:int}", Name = ("UpdateVilla"))]
         [ProducesResponseType(StatusCodes.Status204NoContent)]      
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public IActionResult UpdateVilla(int id, [FromBody] VillaDTO villaDTO)
+        public IActionResult UpdateVilla(int id, [FromBody] VillaUpdateDTO villaDTO)
         {
             if(villaDTO== null || id!= villaDTO.Id)
             {
@@ -146,14 +146,14 @@ namespace WebConsumeApi_Villa.Controllers
         [HttpPatch("{id:int}", Name = ("UpdatePartialVilla"))]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public IActionResult UpdatePartialVilla(int id, JsonPatchDocument<VillaDTO> villaDTO)
+        public IActionResult UpdatePartialVilla(int id, JsonPatchDocument<VillaUpdateDTO> villaDTO)
         {
             if (villaDTO == null || id ==0)
             {
                 return BadRequest();
             }
             var villa = _dbContext.villas.AsNoTracking().FirstOrDefault(x => x.Id == id);
-            VillaDTO modelDTO = new()
+            VillaUpdateDTO modelDTO = new()
             {
                 Id = villa.Id,
                 Name = villa.Name,
