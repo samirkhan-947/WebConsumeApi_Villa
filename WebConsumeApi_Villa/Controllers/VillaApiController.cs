@@ -7,6 +7,7 @@ using WebConsumeApi_Villa.Data;
 using WebConsumeApi_Villa.Logging;
 using WebConsumeApi_Villa.Models;
 using WebConsumeApi_Villa.Models.DTO;
+using WebConsumeApi_Villa.Repository.IRepository;
 
 namespace WebConsumeApi_Villa.Controllers
 {
@@ -18,18 +19,20 @@ namespace WebConsumeApi_Villa.Controllers
         private readonly ILogging _loggerCustome;
         private readonly ApplicationDBContext _dbContext;
         private readonly IMapper _mapper;
-        public VillaApiController(ILogger<VillaApiController> logger, ILogging loggerCustome, ApplicationDBContext dbContext, IMapper mapper)
+        private readonly IVillaRepository _villaRepository;
+        public VillaApiController(ILogger<VillaApiController> logger, ILogging loggerCustome, ApplicationDBContext dbContext, IMapper mapper, IVillaRepository villaRepository)
         {
             _logger = logger;
             _loggerCustome = loggerCustome;
             _dbContext = dbContext;
             _mapper = mapper;
+            _villaRepository = villaRepository;
         }
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<VillaDTO>>> GetVillas()
         {
-           IEnumerable<Villa> villasList = await _dbContext.villas.ToListAsync();
+           IEnumerable<Villa> villasList = await _villaRepository.GetAllAsync();
            return Ok(_mapper.Map<List<VillaDTO>>(villasList));
         }
         [HttpGet("{id:int}",Name =("GetVilla"))]
@@ -47,7 +50,7 @@ namespace WebConsumeApi_Villa.Controllers
                 _loggerCustome.LogWithColor("This is bad reguest for custom", "error");
                 return BadRequest();
             }
-            var villa = await _dbContext.villas.FirstOrDefaultAsync(x => x.Id == id);
+            var villa = await _villaRepository.GetAsync(x => x.Id == id);
             if(villa == null)
             {
                 return NotFound();
@@ -65,7 +68,7 @@ namespace WebConsumeApi_Villa.Controllers
             {
                 return BadRequest(ModelState);
             }
-            if (await _dbContext.villas.FirstOrDefaultAsync(x => x.Name.ToLower() == CreateDTOvilla.Name.ToLower())!=null)
+            if (await _villaRepository.GetAsync(x => x.Name.ToLower() == CreateDTOvilla.Name.ToLower())!=null)
             {
                 ModelState.AddModelError("CustomError", $"{CreateDTOvilla.Name} already Exists");
                 return  BadRequest(ModelState);
@@ -79,9 +82,8 @@ namespace WebConsumeApi_Villa.Controllers
             //    return StatusCode(StatusCodes.Status500InternalServerError);
             //}
             var model = _mapper.Map<Villa>(CreateDTOvilla);
-            
-            _dbContext.villas.Add(model);
-            _dbContext.SaveChanges();
+
+           await _villaRepository.CreateAsync(model);
             return CreatedAtRoute("GetVilla", new { id= model.Id}, CreateDTOvilla);
            // return Ok(villa);
         }
@@ -96,13 +98,13 @@ namespace WebConsumeApi_Villa.Controllers
             {
                 return BadRequest();
             }
-            var villa = await _dbContext.villas.FirstOrDefaultAsync(u=>u.Id == id);
+            var villa = await _villaRepository.GetAsync(u=>u.Id == id);
             if (villa == null)
             {
                 return NotFound();
             }
-            _dbContext.villas.Remove(villa);
-            _dbContext.SaveChanges();
+           await _villaRepository.RemoveAsync(villa);
+           
             return  NoContent();
         }
         [HttpPut("{id:int}", Name = ("UpdateVilla"))]
@@ -115,8 +117,8 @@ namespace WebConsumeApi_Villa.Controllers
                 return BadRequest();
             }          
             var model = _mapper.Map<Villa>(UpdateDTOvill);           
-            _dbContext.villas.Update(model);
-            await  _dbContext.SaveChangesAsync();
+            await _villaRepository.UpdateAsync(model);
+           
             return NoContent();
         }
 
@@ -129,7 +131,7 @@ namespace WebConsumeApi_Villa.Controllers
             {
                 return BadRequest();
             }
-            var villa = await _dbContext.villas.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
+            var villa = await _villaRepository.GetAsync(x => x.Id == id,tracked:false);
             VillaUpdateDTO modelDTO = _mapper.Map<VillaUpdateDTO>(villa);
           
             if (villa == null)
@@ -138,9 +140,9 @@ namespace WebConsumeApi_Villa.Controllers
             }
             villaDTO.ApplyTo(modelDTO, ModelState);
             Villa model = _mapper.Map<Villa>(modelDTO);
-            
-            _dbContext.Update(model);
-           await _dbContext.SaveChangesAsync();   
+
+           await _villaRepository.UpdateAsync(model);
+           
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);

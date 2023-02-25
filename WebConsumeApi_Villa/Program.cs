@@ -4,6 +4,8 @@ using Serilog;
 using WebConsumeApi_Villa;
 using WebConsumeApi_Villa.Data;
 using WebConsumeApi_Villa.Logging;
+using WebConsumeApi_Villa.Repository;
+using WebConsumeApi_Villa.Repository.IRepository;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,7 +18,7 @@ builder.Host.UseSerilog();
 // Add services to the container.
 
 builder.Services.AddAutoMapper(typeof(AutoMapperConfig));
-
+builder.Services.AddScoped<IVillaRepository,VillaRepository>();
 builder.Services.AddTransient<ILogging, Logger>();
 
 builder.Services.AddControllers().AddNewtonsoftJson();
