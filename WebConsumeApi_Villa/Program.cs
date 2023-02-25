@@ -18,6 +18,7 @@ builder.Host.UseSerilog();
 // Add services to the container.
 
 builder.Services.AddAutoMapper(typeof(AutoMapperConfig));
+builder.Services.AddScoped<IVillaNumberRepository, VillaNumberRepository>();
 builder.Services.AddScoped<IVillaRepository,VillaRepository>();
 builder.Services.AddTransient<ILogging, Logger>();
 

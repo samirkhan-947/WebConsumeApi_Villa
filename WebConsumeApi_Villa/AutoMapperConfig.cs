@@ -11,6 +11,11 @@ namespace WebConsumeApi_Villa
             CreateMap<Villa,VillaDTO>().ReverseMap();
             CreateMap<Villa,VillaCreateDTO>().ReverseMap();
             CreateMap<Villa,VillaUpdateDTO>().ReverseMap();
+            CreateMap<VillaNumber, VillaNumberUpdateDTO>().ReverseMap();
+            CreateMap<VillaNumber, VillaNumberCreateDTO>().ReverseMap();
+            CreateMap<VillaNumber, VillaNumberDTO>().ReverseMap();
+
+
         }
     }
 }

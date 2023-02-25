@@ -53,5 +53,6 @@ namespace WebConsumeApi_Villa.Data
             );
         }
         public DbSet<Villa> villas { get; set; }
+        public DbSet<VillaNumber> villaNumbers { get; set; }
     }
 }

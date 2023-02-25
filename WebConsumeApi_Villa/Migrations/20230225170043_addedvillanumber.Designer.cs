@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WebConsumeApi_Villa.Data;
 
@@ -11,9 +12,11 @@ using WebConsumeApi_Villa.Data;
 namespace WebConsumeApi_Villa.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    partial class ApplicationDBContextModelSnapshot : ModelSnapshot
+    [Migration("20230225170043_addedvillanumber")]
+    partial class addedvillanumber
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -66,7 +69,7 @@ namespace WebConsumeApi_Villa.Migrations
                         {
                             Id = 1,
                             Amenity = "",
-                            CreateDate = new DateTime(2023, 2, 25, 23, 58, 36, 61, DateTimeKind.Local).AddTicks(8598),
+                            CreateDate = new DateTime(2023, 2, 25, 22, 30, 42, 911, DateTimeKind.Local).AddTicks(7948),
                             Details = "this is the banglaure villa with beautyful house and decent price ",
                             ImageUrl = "",
                             Name = "Banglore villa",
@@ -79,7 +82,7 @@ namespace WebConsumeApi_Villa.Migrations
                         {
                             Id = 2,
                             Amenity = "",
-                            CreateDate = new DateTime(2023, 2, 25, 23, 58, 36, 61, DateTimeKind.Local).AddTicks(8611),
+                            CreateDate = new DateTime(2023, 2, 25, 22, 30, 42, 911, DateTimeKind.Local).AddTicks(7959),
                             Details = "this is the pune villa with beautyful house and decent price ",
                             ImageUrl = "",
                             Name = "pune villa",
@@ -92,7 +95,7 @@ namespace WebConsumeApi_Villa.Migrations
                         {
                             Id = 3,
                             Amenity = "",
-                            CreateDate = new DateTime(2023, 2, 25, 23, 58, 36, 61, DateTimeKind.Local).AddTicks(8613),
+                            CreateDate = new DateTime(2023, 2, 25, 22, 30, 42, 911, DateTimeKind.Local).AddTicks(7960),
                             Details = "this is the pune villa with beautyful house and decent price ",
                             ImageUrl = "",
                             Name = "patna villa",
@@ -118,25 +121,9 @@ namespace WebConsumeApi_Villa.Migrations
                     b.Property<DateTime>("UpdatedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("VillaID")
-                        .HasColumnType("int");
-
                     b.HasKey("VillaNo");
 
-                    b.HasIndex("VillaID");
-
                     b.ToTable("villaNumbers");
-                });
-
-            modelBuilder.Entity("WebConsumeApi_Villa.Models.VillaNumber", b =>
-                {
-                    b.HasOne("WebConsumeApi_Villa.Models.Villa", "villa")
-                        .WithMany()
-                        .HasForeignKey("VillaID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("villa");
                 });
 #pragma warning restore 612, 618
         }
