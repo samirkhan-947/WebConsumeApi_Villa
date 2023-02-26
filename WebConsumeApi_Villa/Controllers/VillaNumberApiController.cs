@@ -12,7 +12,7 @@ using WebConsumeApi_Villa.Repository.IRepository;
 
 namespace WebConsumeApi_Villa.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/VillaNumberApi")]
     [ApiController]
     public class VillaNumberApiController : ControllerBase
     {
